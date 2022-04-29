@@ -6,15 +6,15 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start','help'])
 def help(message: telebot.types.Message):
-    text = 'Чтобы начать работу введите комманду боту в следующем формате :\n<имя валюты цену которой он хочет узнать> \
-<имя валюты в которой надо узнать цену первой валюты> \
-<количество первой валюты>\nУвидеть список всех доступных валют: /values'
+    text = 'To get started, enter the bot command in the following format:\n<the name of the currency he wants to know the price of> \
+<the name of the currency in which you want to find out the price of the first currency> \
+<amount of first currency>\nSee a list of all available currencies: /values'
     bot.reply_to(message, text)
 
 
 @bot.message_handler(commands=['values'])
 def values(message: telebot.types.Message):
-    text = 'Доступные валюты:'
+    text = 'Available currencies:'
     for key in keys.keys():
         text = '\n'.join((text, key, ))
     bot.reply_to(message, text)
@@ -26,16 +26,16 @@ def convert(message: telebot.types.Message):
         values = message.text.split(' ')
 
         if len(values) != 3:
-            raise ConvertionException("Слишком много параметров.")
+            raise ConvertionException("Too many parameters.")
 
         quote, base, amount = values
         total_base = CurrencyConverter.convert(quote, base, amount)
     except ConvertionException as e:
-        bot.reply_to(message, f'Ошибка пользователя.\n{e}')
+        bot.reply_to(message, f'User error.\n{e}')
     except Exception as e:
-        bot.reply_to(message, f'Не удалось обработать команду\n{e}')
+        bot.reply_to(message, f'Failed to process command\n{e}')
     else:
-        text = f'Цена {amount} {quote} в {base} - {total_base}'
+        text = f'Price {amount} {quote} в {base} - {total_base}'
         bot.send_message(message.chat.id, text)
 
 
